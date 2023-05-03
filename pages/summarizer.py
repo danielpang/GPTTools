@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 
 import openai
 import os
+import validators
 
 from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv()) # read local .env file
@@ -16,7 +17,7 @@ st.set_page_config(
 )
 
 st.write("# Text/ Article Summarizer")
-st.write("### Enter text to summarize in a sentence/ multiple points.")
+st.write("### Enter text or url of article to summarize into multiple points.")
 
 def get_prompt(text):
     return f"""
@@ -24,6 +25,17 @@ def get_prompt(text):
         points.\ 
 
         Text: ```{text}```
+        """
+
+def get_webpage_prompt(url):
+    return f"""
+        Your task is to generate a summary of a web article \
+        from a link.
+
+        Summarize the web article from the link, delimited by triple \
+        backticks, in five points or less. \
+
+        Web article: ```{url}```
         """
 
 def get_completion(prompt, model="gpt-3.5-turbo"): # Andrew mentioned that the prompt/ completion paradigm is preferable for this class
@@ -36,11 +48,17 @@ def get_completion(prompt, model="gpt-3.5-turbo"): # Andrew mentioned that the p
     return response.choices[0].message["content"]
 
 def get_user_input():
-    text_to_summarize = st.text_area("Text to summarize")
-    return text_to_summarize
+    user_input = st.text_area("Text or article to summarize")
+    return user_input
 
-text_to_summarize = get_user_input()
-if text_to_summarize:
-    prompt = get_prompt(text_to_summarize)
+def is_url(str):
+    return validators.url(str)
+
+user_input = get_user_input()
+if user_input:
+    if is_url(user_input):
+        prompt = get_webpage_prompt(user_input)
+    else:
+        prompt = get_prompt(user_input)
     response = get_completion(prompt)
     st.text(response)
