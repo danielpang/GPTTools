@@ -21,8 +21,13 @@ st.write("### Enter text or url of article to summarize into multiple points.")
 
 def get_prompt(text):
     return f"""
-        Your task is to summarize the following text, delimited by triple backticks, into at most three\
-        points.\ 
+        Your task is to summarize the following text, delimited by triple backticks, into at most five\
+        points.\
+
+        Display the output in the form of bullet points like
+        - Point 1
+        - Point 2
+        - Point 3
 
         Text: ```{text}```
         """
@@ -34,6 +39,11 @@ def get_webpage_prompt(url):
 
         Summarize the web article from the link, delimited by triple \
         backticks, in five points or less. \
+
+        Display the output in the form of bullet points like
+        - Point 1
+        - Point 2
+        - Point 3
 
         Web article: ```{url}```
         """
